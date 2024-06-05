@@ -87,27 +87,13 @@ public class NotePad extends JFrame {
 	private void handleMenuItemAction(String command) throws PrinterException {
 		switch (command) {
 		case "New" -> textArea.setText("");
-		// break;
 		case "Save" -> saveFile();
-		// break;
 		case "Open" -> openFile();
-		// break;
 		case "Cut" -> textArea.cut();
-		// break;
 		case "Copy" -> textArea.copy();
-		// break;
 		case "Paste" -> textArea.paste();
-		// break;
 		case "Print" -> textArea.print();
-
-//               try {
-//                    textArea.print();
-//                } catch (PrinterException ex) {
-//                    showError("Error printing.");
-//                }
-//                break;
 		case "Close" -> frame.setVisible(false);
-		// break;
 		}
 	}
 
