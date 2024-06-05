@@ -1,8 +1,6 @@
-package Notepad;
+package Programs;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.print.PrinterException;
@@ -21,63 +19,24 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
-class NotePad extends JFrame implements ActionListener {
-	JFrame frame;
-	JTextArea textArea;
+public class NotePad extends JFrame {
 
-	NotePad() {
-		// intialising the frame
+	// private static final String[] = null;
+	private JFrame frame;
+	private JTextArea textArea;
+
+	public NotePad() {
 		frame = new JFrame("NotePad");
-		// intialising the textarea
 		textArea = new JTextArea("A simple NotePad");
 		textArea.setEditable(false);
-		// create MenuBar
+
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBackground(Color.lightGray);
-		// creating file menu
-		JMenu file = new JMenu("File");
-		// creating the option for File menubar
-		JMenuItem f1 = new JMenuItem("New");
-		JMenuItem f2 = new JMenuItem("Save");
-		JMenuItem f3 = new JMenuItem("Open");
-		JMenuItem f4 = new JMenuItem("Print");
 
-		// add actionlisteners to each of the options
-		f1.addActionListener(this);
-		f2.addActionListener(this);
-		f3.addActionListener(this);
-		f4.addActionListener(this);
-		// adding menuitem to "File" menu
-		// adding the option to the file menu
-		file.add(f1);
-		file.add(f2);
-		file.add(f3);
-		file.add(f4);
+		createFileMenu(menuBar);
+		createEditMenu(menuBar);
+		createCloseMenu(menuBar);
 
-		// creating "Edit" menu
-		JMenu edit = new JMenu("Edit");
-		// creating the option for Edit menu Bar
-		JMenuItem e1 = new JMenuItem("Cut");
-		JMenuItem e2 = new JMenuItem("Copy");
-		JMenuItem e3 = new JMenuItem("Paste");
-
-		// add actionListeners to each of the option of edit menuitem
-		e1.addActionListener(this);
-		e2.addActionListener(this);
-		e3.addActionListener(this);
-		// Adding menuitem to "Edit" menu
-		// adding option to edit menu
-		edit.add(e1);
-		edit.add(e2);
-		edit.add(e3);
-		// creating "Close" Menu
-		JMenu close = new JMenu("Close");
-		close.addActionListener(this);
-		// adding file,edit,close to MenuBar
-		menuBar.add(file);
-		menuBar.add(edit);
-		menuBar.add(close);
-		// setting evrything to frame
 		frame.setJMenuBar(menuBar);
 		frame.add(textArea);
 		frame.setSize(550, 450);
@@ -90,93 +49,116 @@ class NotePad extends JFrame implements ActionListener {
 		});
 	}
 
-	// to add the functionalities
-	public void actionPerformed(ActionEvent e) {
-		// extracting command into to string
-		String s = e.getActionCommand();
-		switch (s) {
-		case "New":
-			textArea.setText("");
-			break;
-		case "Save":
-			//// code for saving txt file to memory
-			// creating the object of jfilechooser class with starting path of D:
-			JFileChooser j = new JFileChooser("D:");
-
-			// invoke save dialoguebox
-			int r = j.showSaveDialog(null);
-			// r contains status of dialogbox 0 if clicked on save
-			if (r == 0) {
-				// declare a file object and store file location
-				File fi = new File(j.getSelectedFile().getAbsolutePath());
-				try {
-					FileWriter fw = new FileWriter(fi);
-					BufferedWriter bw = new BufferedWriter(fw);
-					bw.write(textArea.getText());
-					bw.flush();
-					bw.close();
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
-				}
-			} else {
-				JOptionPane.showMessageDialog(frame, "The user has cancelled the operation");
-			}
-			break;
-		case "Open":
-
-			JFileChooser jo = new JFileChooser("D:");
-
-			// invoke save dialoguebox
-			int ro = jo.showOpenDialog(null);
-			// r contains status of dialogbox 0 if clicked on save
-			if (ro == 0) {
-				// declare a file object and store file location
-				File fi = new File(jo.getSelectedFile().getAbsolutePath());
-				try {
-					FileReader fw = new FileReader(fi);
-					BufferedReader bw = new BufferedReader(fw);
-					String s1 = "", s2 = "";
-					// first Line stored int s1;
-					s1 = bw.readLine();
-					while (s1 != null) {
-						s2 += s1 + "\n";
-						s1 = bw.readLine();
-					}
-					textArea.setText(s2);
-					bw.close();
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
-				}
-			} else {
-				JOptionPane.showMessageDialog(frame, "The user has cancelled the operation");
-			}
-			break;
-		case "Print":
-			try {
-				textArea.print();
-			} catch (PrinterException ex) {
-				throw new RuntimeException(ex);
-			}
-			break;
-		case "Cut":
-			textArea.cut();
-			textArea.cut();
-			break;
-		case "Copy":
-			// textArea.copy();
-			textArea.copy();
-			break;
-		case "Paste":
-			textArea.paste();
-			break;
-		case "Close":
-			frame.setVisible(false);
-			break;
-		}
-		;
+	private void createFileMenu(JMenuBar menuBar) {
+		JMenu file = new JMenu("File");
+		String[] fileMenuItems = { "New", "Save", "Open", "Print", "Close" };
+		createMenuItems(file, fileMenuItems);
+		menuBar.add(file);
 	}
 
-	public static void main(String args[]) {
-		NotePad n = new NotePad();
+	private void createEditMenu(JMenuBar menuBar) {
+		JMenu edit = new JMenu("Edit");
+		String[] editMenuItems = { "Cut", "Copy", "Paste" };
+		createMenuItems(edit, editMenuItems);
+		menuBar.add(edit);
+	}
+
+	private void createCloseMenu(JMenuBar menuBar) {
+		JMenu close = new JMenu("Close");
+		String[] closeMenuItems = { "Close" };
+		createMenuItems(close, closeMenuItems);
+		menuBar.add(close);
+	}
+
+	private void createMenuItems(JMenu menu, String[] itemNames) {
+		for (String itemName : itemNames) {
+			JMenuItem menuItem = new JMenuItem(itemName);
+			menuItem.addActionListener(e -> {
+				try {
+					handleMenuItemAction(itemName);
+				} catch (PrinterException e1) {
+					showError("Error printing." + e1);
+				}
+			});
+			menu.add(menuItem);
+		}
+	}
+
+	private void handleMenuItemAction(String command) throws PrinterException {
+		switch (command) {
+		case "New" -> textArea.setText("");
+		// break;
+		case "Save" -> saveFile();
+		// break;
+		case "Open" -> openFile();
+		// break;
+		case "Cut" -> textArea.cut();
+		// break;
+		case "Copy" -> textArea.copy();
+		// break;
+		case "Paste" -> textArea.paste();
+		// break;
+		case "Print" -> textArea.print();
+
+//               try {
+//                    textArea.print();
+//                } catch (PrinterException ex) {
+//                    showError("Error printing.");
+//                }
+//                break;
+		case "Close" -> frame.setVisible(false);
+		// break;
+		}
+	}
+
+	private void saveFile() {
+		JFileChooser fileChooser = getFileChooser();
+		int result = fileChooser.showSaveDialog(null);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+				writer.write(textArea.getText());
+			} catch (IOException e) {
+				showError("Error saving file.");
+			}
+		} else {
+			showMessage("The user has cancelled the operation");
+		}
+	}
+
+	private void openFile() {
+		JFileChooser fileChooser = getFileChooser();
+		int result = fileChooser.showOpenDialog(null);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+				StringBuilder content = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null) {
+					content.append(line).append("\n");
+				}
+				textArea.setText(content.toString());
+			} catch (IOException e) {
+				showError("Error opening file.");
+			}
+		} else {
+			showMessage("The user has cancelled the operation");
+		}
+	}
+
+	private JFileChooser getFileChooser() {
+		return new JFileChooser("D:");
+	}
+
+	private void showError(String message) {
+		JOptionPane.showMessageDialog(frame, message, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void showMessage(String message) {
+		JOptionPane.showMessageDialog(frame, message);
+	}
+
+	public static void main(String[] args) {
+		new NotePad();
 	}
 }
